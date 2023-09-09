@@ -53,9 +53,9 @@ Just add it to `pom.xml`:
 </project>
 ```
 
-If your ANTLR4 grammar file is in the `src/main/antlr4/Sample.g4` path,
-the EBNF will be generated in the `target/ebnf/Sample.txt` path and
-the PDF will be in the `target/ebnf/Sample.pdf` file.
+If your ANTLR4 grammar file is in the `src/main/antlr4/foo/bar/Sample.g4` path,
+the EBNF will be generated in the `target/ebnf/foo/bar/Sample.txt` path and
+the PDF will be in the `target/ebnf/foo/bar/Sample.pdf` file.
 
 You can also run this plugin in one line, without adding it to any `pom.xml`
 (Maven is still used, but no project is required, just a directory with `.g4` files):
