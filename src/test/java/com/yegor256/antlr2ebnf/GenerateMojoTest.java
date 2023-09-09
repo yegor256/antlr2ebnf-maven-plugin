@@ -55,7 +55,7 @@ final class GenerateMojoTest {
             ).getBytes(StandardCharsets.UTF_8)
         );
         final GenerateMojo mojo = new GenerateMojo();
-        mojo.convertDir = new File("/code/convert-master/build/lib");
+        mojo.convertDir = new File("target/convert");
         mojo.sourceDir = temp.toFile();
         mojo.targetDir = temp.toFile();
         mojo.pdflatex = "pdflatex";

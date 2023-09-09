@@ -37,6 +37,27 @@ SOFTWARE.
   <build>
     <plugins>
       <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.7.0</version>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <uri>http://public.yegor256.com/convert.zip</uri>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/convert</outputDirectory>
+              <md5>5b1f9712b75439446f2fe3d4e1339448</md5>
+              <checkSignature>true</checkSignature>
+              <skipCache>false</skipCache>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>com.yegor256</groupId>
         <artifactId>antlr2ebnf-maven-plugin</artifactId>
         <version>@project.version@</version>
@@ -47,7 +68,7 @@ SOFTWARE.
               <goal>generate</goal>
             </goals>
             <configuration>
-              <convertDir>/code/convert-master/build/lib</convertDir>
+              <convertDir>${project.build.directory}/convert</convertDir>
             </configuration>
           </execution>
         </executions>

@@ -97,9 +97,9 @@ public final class GenerateMojo extends AbstractMojo {
      */
     @Parameter(
         required = true,
-        defaultValue = "pdflatex"
+        defaultValue = "false"
     )
-    public String pdflatex;
+    public boolean skipLatex;
 
     /**
      * The binary for 'pdflatex'.
@@ -148,7 +148,11 @@ public final class GenerateMojo extends AbstractMojo {
         Files.write(target, ebnf.getBytes(StandardCharsets.UTF_8));
         Logger.info(this, "EBNF saved into '%s'", target);
         Logger.debug(this, "EBNF content:%n%s", ebnf);
-        this.toPdf(target);
+        if (this.skipLatex) {
+            Logger.info(this, "PDF generation skipped due to 'skipLatex' flag");
+        } else {
+            this.toPdf(target);
+        }
     }
 
     /**
