@@ -69,6 +69,7 @@ public final class GenerateMojo extends AbstractMojo {
      * Source directory.
      */
     @Parameter(
+        property = "antlr2ebnf.sourceDir",
         required = true,
         defaultValue = "${project.basedir}/src/main/antlr4"
     )
@@ -78,6 +79,7 @@ public final class GenerateMojo extends AbstractMojo {
      * Target directory.
      */
     @Parameter(
+        property = "antlr2ebnf.targetDir",
         required = true,
         defaultValue = "${project.build.directory}/ebnf"
     )
@@ -87,6 +89,7 @@ public final class GenerateMojo extends AbstractMojo {
      * Convert location.
      */
     @Parameter(
+        property = "antlr2ebnf.convertDir",
         required = true,
         defaultValue = "${project.build.directory}/convert"
     )
@@ -96,6 +99,7 @@ public final class GenerateMojo extends AbstractMojo {
      * Do we need to skip the entire plugin execution?
      */
     @Parameter(
+        property = "antlr2ebnf.skip",
         required = true,
         defaultValue = "false"
     )
@@ -105,6 +109,7 @@ public final class GenerateMojo extends AbstractMojo {
      * Do we need to compile it into PDF, through the "pdflatex"?
      */
     @Parameter(
+        property = "antlr2ebnf.skipLatex",
         required = true,
         defaultValue = "false"
     )
@@ -114,6 +119,7 @@ public final class GenerateMojo extends AbstractMojo {
      * The binary for 'pdflatex'.
      */
     @Parameter(
+        property = "antlr2ebnf.pdflatex",
         required = true,
         defaultValue = "pdflatex"
     )
