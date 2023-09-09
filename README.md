@@ -13,7 +13,8 @@ in the format expected by the
 Then, using `pdflatex` installed on your computer, 
 the plugin renders the generated EBNF as a PDF document 
 (you can skip that with the `skipLatex` configuration option).
-Then, you can then transform PDF to SVG or PNG (explained below).
+Then, you can transform this PDF to SVG or PNG formats, 
+using the tools explained below.
 
 The plugin expects you to have ANTLR-to-XML converter made by 
 [Gunther Rademacher](https://www.bottlecaps.de/convert/), in the `target/convert`
@@ -52,11 +53,12 @@ Just add it to `pom.xml`:
 </project>
 ```
 
-If your ANTLR4 grammar file is in `src/main/antlr4/Sample.g4`,
-the EBNF will be generated in the `target/ebnf/Sample.txt` file and
+If your ANTLR4 grammar file is in the `src/main/antlr4/Sample.g4` path,
+the EBNF will be generated in the `target/ebnf/Sample.txt` path and
 the PDF will be in the `target/ebnf/Sample.pdf` file.
 
-You can also run it in one line, without adding to `pom.xml`:
+You can also run this plugin in one line, without adding it to any `pom.xml`
+(Maven is still used, but no project is required, just a directory with `.g4` files):
 
 ```bash
 $ mvn com.yegor256:antlr2ebnf-maven-plugin:generate \

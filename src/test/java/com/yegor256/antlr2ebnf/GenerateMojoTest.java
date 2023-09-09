@@ -79,4 +79,11 @@ final class GenerateMojoTest {
             Matchers.is(true)
         );
     }
+
+    @Test
+    void skipsExecution() throws Exception {
+        final GenerateMojo mojo = new GenerateMojo();
+        mojo.skip = true;
+        mojo.execute();
+    }
 }
