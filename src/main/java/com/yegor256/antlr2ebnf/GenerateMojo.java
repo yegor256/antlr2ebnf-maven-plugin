@@ -195,7 +195,7 @@ public final class GenerateMojo extends AbstractMojo {
         final String output = new Jaxec(
             "java",
             "-cp",
-            String.join(":", jars),
+            String.join(File.pathSeparator, jars),
             "de.bottlecaps.convert.Convert",
             "-xml",
             antlr.toString()
