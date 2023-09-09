@@ -83,6 +83,39 @@ final class GenerateMojoTest {
     }
 
     @Test
+    void skipsLatex(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("Foo.g4");
+        final Path dir = src.getParent();
+        dir.toFile().mkdirs();
+        Files.write(
+            src,
+            String.join(
+                System.lineSeparator(),
+                "grammar Foo;",
+                "foo: 'HELLO';"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        final GenerateMojo mojo = new GenerateMojo();
+        mojo.convertDir = new File("target/convert");
+        mojo.sourceDir = temp.toFile();
+        mojo.include = "**/*.g4";
+        mojo.targetDir = temp.toFile();
+        mojo.pdflatex = "/wrong-path-should-not-be-used";
+        mojo.skipLatex = true;
+        mojo.execute();
+        final Path target = temp.resolve("Foo.txt");
+        MatcherAssert.assertThat(
+            target.toFile().exists(),
+            Matchers.is(true)
+        );
+        final Path pdf = temp.resolve("Foo.pdf");
+        MatcherAssert.assertThat(
+            pdf.toFile().exists(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void skipsExecution() throws Exception {
         final GenerateMojo mojo = new GenerateMojo();
         mojo.skip = true;
@@ -90,7 +123,7 @@ final class GenerateMojoTest {
     }
 
     @Test
-    void failsIfSourceDirIsAbsent() throws Exception {
+    void failsIfSourceDirIsAbsent() {
         final GenerateMojo mojo = new GenerateMojo();
         mojo.sourceDir = new File("/file-is-absent");
         Assertions.assertThrows(
