@@ -56,6 +56,15 @@ If your ANTLR4 grammar file is in `src/main/antlr4/Sample.g4`,
 the EBNF will be generated in the `target/ebnf/Sample.txt` file and
 the PDF will be in the `target/ebnf/Sample.pdf` file.
 
+You can also run it in one line, without adding to `pom.xml`:
+
+```bash
+$ mvn com.yegor256:antlr2ebnf-maven-plugin:generate \
+  -Dantlr2ebnf.sourceDir=/tmp/antlr4 \
+  -Dantlr2ebnf.targetDir=/tmp/ebnf \
+  -Dantlr2ebnf.convertDir=/tmp/convert-jars
+```
+
 Then, if you need PNG and SVG, use 
 [pdfcrop](https://ctan.org/pkg/pdfcrop),
 [pdf2svg](https://manpages.ubuntu.com/manpages/xenial/man1/pdf2svg.1.html),

@@ -51,7 +51,7 @@ SOFTWARE.
               <unpack>true</unpack>
               <outputDirectory>${project.build.directory}/convert</outputDirectory>
               <md5>5b1f9712b75439446f2fe3d4e1339448</md5>
-              <checkSignature>true</checkSignature>
+              <alwaysVerifyChecksum>true</alwaysVerifyChecksum>
               <skipCache>false</skipCache>
             </configuration>
           </execution>
