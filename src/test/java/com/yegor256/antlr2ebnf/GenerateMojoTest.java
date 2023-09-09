@@ -24,10 +24,12 @@
 package com.yegor256.antlr2ebnf;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -112,6 +114,21 @@ final class GenerateMojoTest {
         MatcherAssert.assertThat(
             pdf.toFile().exists(),
             Matchers.is(false)
+        );
+    }
+
+    @Test
+    void failsIfCovertIsAbsent(@TempDir final Path temp) throws IOException {
+        final GenerateMojo mojo = new GenerateMojo();
+        mojo.sourceDir = temp.toFile();
+        Files.write(
+            temp.resolve("foo.g4"),
+            "some wrong grammar here".getBytes(StandardCharsets.UTF_8)
+        );
+        mojo.convertDir = new File("/this-path-is-absent");
+        Assertions.assertThrows(
+            MojoFailureException.class,
+            () -> mojo.execute()
         );
     }
 
