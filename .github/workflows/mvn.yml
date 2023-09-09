@@ -16,6 +16,10 @@ jobs:
         java: [11, 17]
     steps:
       - uses: actions/checkout@v4
+      - uses: teatimeguest/setup-texlive-action@v2.6.2
+        with:
+          update-all-packages: true
+          packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
