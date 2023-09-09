@@ -1,6 +1,9 @@
 [![mvn](https://github.com/yegor256/antlr2ebnf-maven-plugin/actions/workflows/mvn.yml/badge.svg)](https://github.com/yegor256/antlr2ebnf-maven-plugin/actions/workflows/mvn.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.yegor256/antlr2ebnf-maven-plugin.svg)](https://maven-badges.herokuapp.com/maven-central/com.yegor256/antlr2ebnf-maven-plugin)
 [![Javadoc](http://www.javadoc.io/badge/com.yegor256/antlr2ebnf-maven-plugin.svg)](http://www.javadoc.io/doc/com.yegor256/antlr2ebnf-maven-plugin)
+[![codecov](https://codecov.io/gh/yegor256/antlr2ebnf-maven-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/yegor256/antlr2ebnf-maven-plugin)
+[![Hits-of-Code](https://hitsofcode.com/github/yegor256/antlr2ebnf-maven-plugin)](https://hitsofcode.com/view/github/yegor256/antlr2ebnf-maven-plugin)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/antlr2ebnf-maven-plugin/blob/master/LICENSE.txt)
 
 This Maven plugin generates EBNF grammar from ANTLR grammar files and then
 renders it as PDF. The plugin expects you to have ANTLR-to-XML converter made by 
