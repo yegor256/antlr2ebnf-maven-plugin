@@ -27,8 +27,10 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -85,5 +87,15 @@ final class GenerateMojoTest {
         final GenerateMojo mojo = new GenerateMojo();
         mojo.skip = true;
         mojo.execute();
+    }
+
+    @Test
+    void failsIfSourceDirIsAbsent() throws Exception {
+        final GenerateMojo mojo = new GenerateMojo();
+        mojo.sourceDir = new File("/file-is-absent");
+        Assertions.assertThrows(
+            MojoExecutionException.class,
+            () -> mojo.execute()
+        );
     }
 }
