@@ -8,6 +8,9 @@ assets:
   secring.gpg: yegor256/home#assets/secring.gpg
 install: |
   pdd --file=/dev/null
+  sudo tlmgr option repository ctan
+  sudo tlmgr --verify-repo=none update --self
+  sudo tlmgr --verify-repo=none update naive-ebnf
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never
