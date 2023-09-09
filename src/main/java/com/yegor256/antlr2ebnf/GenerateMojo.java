@@ -93,6 +93,15 @@ public final class GenerateMojo extends AbstractMojo {
     public File convertDir;
 
     /**
+     * Do we need to skip the entire plugin execution?
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "false"
+    )
+    public boolean skip;
+
+    /**
      * Do we need to compile it into PDF, through the "pdflatex"?
      */
     @Parameter(
@@ -113,6 +122,10 @@ public final class GenerateMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
+        if (this.skip) {
+            Logger.info(this, "Skipped because of the 'skip' configuration option");
+            return;
+        }
         if (!this.sourceDir.exists()) {
             throw new MojoExecutionException(
                 String.format(

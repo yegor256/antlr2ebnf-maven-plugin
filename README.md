@@ -5,8 +5,17 @@
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/antlr2ebnf-maven-plugin)](https://hitsofcode.com/view/github/yegor256/antlr2ebnf-maven-plugin)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/antlr2ebnf-maven-plugin/blob/master/LICENSE.txt)
 
-This Maven plugin generates EBNF grammar from ANTLR grammar files and then
-renders it as PDF. The plugin expects you to have ANTLR-to-XML converter made by 
+This Maven plugin takes your 
+[ANTLR4](https://github.com/antlr/antlr4) grammar `.g4` files 
+and generates [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)
+in the format expected by the 
+[naive-ebnf](https://ctan.org/pkg/naive-ebnf) LaTeX package.
+Then, using `pdflatex` installed on your computer, 
+the plugin renders the generated EBNF as a PDF document 
+(you can skip that with the `skipLatex` configuration option).
+Then, you can then transform PDF to SVG or PNG (explained below).
+
+The plugin expects you to have ANTLR-to-XML converter made by 
 [Gunther Rademacher](https://www.bottlecaps.de/convert/), in the `target/convert`
 directory (normally, there should be five `.jar` files).
 
@@ -21,6 +30,22 @@ Just add it to `pom.xml`:
         <groupId>com.yegor256</groupId>
         <artifactId>antlr2ebnf-maven-plugin</artifactId>
         <version>0.0.1</version>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <skip>false</skip>
+              <skipLatex>false</skipLatex>
+              <sourceDir>src/main/antlr4</sourceDir>
+              <targetDir>target/ebnf</targetDir>
+              <convertDir>${project.build.directory}/convert</convertDir>
+              <pdflatex>/opt/homebrew/bin/pdflatex</pdflatex>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
