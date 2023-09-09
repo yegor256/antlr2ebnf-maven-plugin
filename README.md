@@ -8,7 +8,7 @@
 This Maven plugin generates EBNF grammar from ANTLR grammar files and then
 renders it as PDF. The plugin expects you to have ANTLR-to-XML converter made by 
 [Gunther Rademacher](https://www.bottlecaps.de/convert/), in the `target/convert`
-directory.
+directory (normally, there should be five `.jar` files).
 
 Just add it to `pom.xml`:
 
@@ -28,12 +28,19 @@ Just add it to `pom.xml`:
 ```
 
 If your ANTLR4 grammar file is in `src/main/antlr4/Sample.g4`,
-the PDF will be generated in `target/ebnf/Sample.txt` and.
+the EBNF will be generated in the `target/ebnf/Sample.txt` file and
+the PDF will be in the `target/ebnf/Sample.pdf` file.
 
-If you need PNG and SVG, use these tools:
+Then, if you need PNG and SVG, use 
+[pdfcrop](https://ctan.org/pkg/pdfcrop),
+[pdf2svg](https://manpages.ubuntu.com/manpages/xenial/man1/pdf2svg.1.html),
+and 
+[convert](https://imagemagick.org/script/convert.php):
 
 ```bash
 $ pdfcrop --margins '10 10 10 10' Sample.pdf crop.pdf
 $ pdf2svg crop.pdf Sample.svg
 $ convert -density 300 -quality 100 -transparent white -colorspace RGB crop.pdf Sample.png
 ```
+
+Should work. If it doesn't, submit a ticket, I will try to help.
