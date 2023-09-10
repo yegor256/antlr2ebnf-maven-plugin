@@ -263,8 +263,8 @@ public final class GenerateMojo extends AbstractMojo {
         }
         if (Logger.isInfoEnabled(this)) {
             Logger.info(
-                this, "PDF generated and saved to '%s', in %[ms]s",
-                pdf, System.currentTimeMillis() - start
+                this, "PDF generated and saved to '%s' (%d bytes), in %[ms]s",
+                pdf, pdf.length(), System.currentTimeMillis() - start
             );
         }
     }
