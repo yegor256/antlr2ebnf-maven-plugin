@@ -25,6 +25,7 @@
 [
   'target/ebnf/org/example/Program.txt',
   'target/ebnf/org/example/Program.pdf',
+  'target/ebnf-latex/article.aux',
 ].each { assert new File(basedir, it).exists() }
 
 true
