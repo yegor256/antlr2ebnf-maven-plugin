@@ -64,6 +64,7 @@ final class GenerateMojoTest {
         mojo.include = "**/*.g4";
         mojo.targetDir = temp.toFile();
         mojo.pdflatex = "pdflatex";
+        mojo.latexDir = temp.resolve("latex-dir").toFile();
         mojo.execute();
         final Path target = temp.resolve("a/b/c/Simple.txt");
         MatcherAssert.assertThat(

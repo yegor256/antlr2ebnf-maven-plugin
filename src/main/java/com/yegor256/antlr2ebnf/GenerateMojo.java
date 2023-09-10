@@ -143,6 +143,21 @@ public final class GenerateMojo extends AbstractMojo {
     public boolean skipLatex;
 
     /**
+     * The directory where ".pdf" files will be compiled by pdflatex.
+     *
+     * <p>Before every next compilation all files and subdirectories in this
+     * directory will be deleted.</p>
+     *
+     * @since 0.0.3
+     */
+    @Parameter(
+        property = "antlr2ebnf.latexDir",
+        required = true,
+        defaultValue = "${project.build.directory}/ebnf-latex"
+    )
+    public File latexDir;
+
+    /**
      * The path of the "pdflatex" executable binary.
      */
     @Parameter(
@@ -208,7 +223,19 @@ public final class GenerateMojo extends AbstractMojo {
      * @throws IOException If fails
      */
     private void toPdf(final Path ebnf) throws IOException {
-        final Path dir = ebnf.getParent();
+        final Path dir = this.latexDir.toPath();
+        if (ebnf.getParent().startsWith(dir)) {
+            throw new IOException(
+                String.format(
+                    "The 'targetDir' directory '%s' is inside of the 'latexDir' directory '%s'",
+                    ebnf.getParent(), dir
+                )
+            );
+        }
+        if (dir.toFile().mkdirs()) {
+            Logger.debug(this, "The 'latexDir' directory created: '%s'", dir);
+        }
+        org.apache.commons.io.FileUtils.cleanDirectory(dir.toFile());
         Files.write(
             dir.resolve("article.tex"),
             new IoCheckedText(new TextOf(new ResourceOf("com/yegor256/antlr2ebnf/ebnf.tex")))
@@ -224,7 +251,7 @@ public final class GenerateMojo extends AbstractMojo {
             "article"
         ).withHome(dir).exec();
         final File raw = dir.resolve("article.pdf").toFile();
-        final File pdf = dir.resolve(
+        final File pdf = ebnf.getParent().resolve(
             ebnf.getFileName().toString().replace(".txt", ".pdf")
         ).toFile();
         if (!raw.renameTo(pdf)) {
