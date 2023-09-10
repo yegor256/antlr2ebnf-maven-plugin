@@ -222,6 +222,7 @@ public final class GenerateMojo extends AbstractMojo {
      * @param ebnf The location of the EBNF text
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.PrematureDeclaration")
     private void toPdf(final Path ebnf) throws IOException {
         final Path dir = this.latexDir.toPath();
         if (ebnf.getParent().startsWith(dir)) {
@@ -243,6 +244,7 @@ public final class GenerateMojo extends AbstractMojo {
                 .replace("EBNF", new String(Files.readAllBytes(ebnf), StandardCharsets.UTF_8))
                 .getBytes(StandardCharsets.UTF_8)
         );
+        final long start = System.currentTimeMillis();
         new Jaxec(
             this.pdflatex,
             "-interaction=errorstopmode",
@@ -259,7 +261,12 @@ public final class GenerateMojo extends AbstractMojo {
                 String.format("Failed to move '%s' to '%s'", raw, pdf)
             );
         }
-        Logger.info(this, "PDF saved to '%s'", pdf);
+        if (Logger.isInfoEnabled(this)) {
+            Logger.info(
+                this, "PDF generated and saved to '%s', in %[ms]s",
+                pdf, System.currentTimeMillis() - start
+            );
+        }
     }
 
     /**
@@ -268,11 +275,13 @@ public final class GenerateMojo extends AbstractMojo {
      * @return The EBNF as text
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.PrematureDeclaration")
     private String toEbnf(final Path antlr) throws IOException {
         final List<String> jars = Stream.of(this.convert())
             .filter(file -> !file.isDirectory())
             .map(File::getAbsolutePath)
             .collect(Collectors.toList());
+        final long start = System.currentTimeMillis();
         final String output = new Jaxec(
             "java",
             "-cp",
@@ -298,7 +307,15 @@ public final class GenerateMojo extends AbstractMojo {
                 Level.FINE
             )
         ).pass(xml);
-        return after.xpath("/ebnf/text()").get(0).replaceAll(" +", " ");
+        final String ebnf = after.xpath("/ebnf/text()").get(0).replaceAll(" +", " ");
+        if (Logger.isInfoEnabled(this)) {
+            Logger.info(
+                this,
+                "EBNF generated (%d lines) by the 'convert' and XSLT transformations in %[ms]s",
+                ebnf.split("\n").length, System.currentTimeMillis() - start
+            );
+        }
+        return ebnf;
     }
 
     /**
