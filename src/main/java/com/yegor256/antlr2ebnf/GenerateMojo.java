@@ -327,7 +327,7 @@ public final class GenerateMojo extends AbstractMojo {
         if (!this.convertDir.exists()) {
             throw new IOException(
                 String.format(
-                    "The JAR of the 'convert' tool is not unpacked into '%s'",
+                    "The JAR of the 'convert' tool is not unpacked into '%s' (the directory is absent)",
                     this.convertDir
                 )
             );
@@ -336,7 +336,7 @@ public final class GenerateMojo extends AbstractMojo {
         if (jars == null) {
             throw new IOException(
                 String.format(
-                    "The directory of the 'convert' tool is wrong: '%s'",
+                    "The directory of the 'convert' tool is wrong (can't list files in it): '%s'",
                     this.convertDir
                 )
             );
