@@ -46,6 +46,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.utils.io.FileUtils;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
@@ -118,6 +120,18 @@ public final class GenerateMojo extends AbstractMojo {
         defaultValue = "${project.build.directory}/convert"
     )
     public File convertDir;
+
+    /**
+     * Fit the entire content into one PDF page.
+     *
+     * @since 0.0.5
+     */
+    @Parameter(
+        property = "antlr2ebnf.fitToPage",
+        required = true,
+        defaultValue = "true"
+    )
+    public boolean fitToPage;
 
     /**
      * Do we need to skip the entire plugin execution?
@@ -238,11 +252,27 @@ public final class GenerateMojo extends AbstractMojo {
         }
         org.apache.commons.io.FileUtils.cleanDirectory(dir.toFile());
         Files.write(
-            dir.resolve("article.tex"),
-            new IoCheckedText(new TextOf(new ResourceOf("com/yegor256/antlr2ebnf/ebnf.tex")))
+            dir.resolve("ebnf.cls"),
+            new IoCheckedText(new TextOf(new ResourceOf("com/yegor256/antlr2ebnf/ebnf.cls")))
                 .asString()
-                .replace("EBNF", new String(Files.readAllBytes(ebnf), StandardCharsets.UTF_8))
                 .getBytes(StandardCharsets.UTF_8)
+        );
+        String suffix = "";
+        if (this.fitToPage) {
+            suffix = "-fitToPage";
+        }
+        final String bnf = new String(Files.readAllBytes(ebnf), StandardCharsets.UTF_8);
+        final String tex = new IoCheckedText(
+            new TextOf(
+                new ResourceOf(
+                    String.format("com/yegor256/antlr2ebnf/ebnf%s.tex", suffix)
+                )
+            )
+        ).asString().replace("EBNF", bnf).trim();
+        Files.write(dir.resolve("article.tex"), tex.getBytes(StandardCharsets.UTF_8));
+        Logger.debug(
+            this, "LaTeX before processing (%d lines):%n%s",
+            tex.split("\n").length, tex
         );
         final long start = System.currentTimeMillis();
         new Jaxec(
@@ -261,11 +291,14 @@ public final class GenerateMojo extends AbstractMojo {
                 String.format("Failed to move '%s' to '%s'", raw, pdf)
             );
         }
-        if (Logger.isInfoEnabled(this)) {
-            Logger.info(
-                this, "PDF generated and saved to '%s' (%d bytes), in %[ms]s",
-                pdf, pdf.length(), System.currentTimeMillis() - start
-            );
+        try (PDDocument doc = Loader.loadPDF(pdf)) {
+            if (Logger.isInfoEnabled(this)) {
+                Logger.info(
+                    this, "PDF generated (%d pages) and saved to '%s' (%d bytes), in %[ms]s",
+                    doc.getPages().getCount(),
+                    pdf, pdf.length(), System.currentTimeMillis() - start
+                );
+            }
         }
     }
 
@@ -307,7 +340,7 @@ public final class GenerateMojo extends AbstractMojo {
                 Level.FINE
             )
         ).pass(xml);
-        final String ebnf = after.xpath("/ebnf/text()").get(0).replaceAll(" +", " ");
+        final String ebnf = after.xpath("/ebnf/text()").get(0).replaceAll(" +", " ").trim();
         if (Logger.isInfoEnabled(this)) {
             Logger.info(
                 this,

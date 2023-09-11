@@ -55,7 +55,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>jaxec</artifactId>
-      <version>0.1.0</version>
+      <version>0.2.0</version>
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
@@ -76,6 +76,11 @@ SOFTWARE.
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.13.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
