@@ -274,6 +274,10 @@ public final class GenerateMojo extends AbstractMojo {
             this, "LaTeX before processing (%d lines):%n%s",
             tex.split("\n").length, tex
         );
+        Logger.debug(
+            this,
+            "The document class for LaTeX is here: https://github.com/yegor256/antlr2ebnf-maven-plugin/blob/master/src/main/resources/com/yegor256/antlr2ebnf/ebnf.cls"
+        );
         final long start = System.currentTimeMillis();
         new Jaxec(
             this.pdflatex,
