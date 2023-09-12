@@ -86,6 +86,38 @@ final class GenerateMojoTest {
     }
 
     @Test
+    void generatesEbnfFitToPage(@TempDir final Path temp) throws Exception {
+        final Path src = temp.resolve("Bar.g4");
+        final Path dir = src.getParent();
+        dir.toFile().mkdirs();
+        Files.write(
+            src,
+            String.join(
+                System.lineSeparator(),
+                "grammar Bar;",
+                "program: alpha | beta | gamma;",
+                "alpha: INT;",
+                "beta: 'bar';",
+                "INT: [0-9]+;"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        final GenerateMojo mojo = new GenerateMojo();
+        mojo.convertDir = new File("target/convert");
+        mojo.sourceDir = temp.toFile();
+        mojo.include = "**/*.g4";
+        mojo.targetDir = temp.toFile();
+        mojo.pdflatex = "pdflatex";
+        mojo.latexDir = temp.resolve("latex-dir").toFile();
+        mojo.fitToPage = true;
+        mojo.execute();
+        final Path pdf = temp.resolve("Bar.pdf");
+        MatcherAssert.assertThat(
+            pdf.toFile().exists(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void skipsLatex(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("Foo.g4");
         final Path dir = src.getParent();

@@ -3,7 +3,6 @@
 \LoadClass[12pt]{article}
 \RequirePackage[T1]{fontenc}
 \RequirePackage{lmodern}
-\RequirePackage[paperwidth=16in]{geometry}
 \RequirePackage[usenames,dvipsnames]{xcolor}
 \RequirePackage{microtype}
 \RequirePackage{naive-ebnf}
