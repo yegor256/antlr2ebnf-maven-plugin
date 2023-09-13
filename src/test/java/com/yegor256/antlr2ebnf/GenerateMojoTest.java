@@ -53,8 +53,9 @@ final class GenerateMojoTest {
                 System.lineSeparator(),
                 "grammar Simple;",
                 "program: alpha | beta;",
-                "alpha: BOOL;",
+                "alpha: BOOL | BAR;",
                 "beta: 'test';",
+                "BAR: '\\n';",
                 "BOOL: 'TRUE' | 'FALSE';"
             ).getBytes(StandardCharsets.UTF_8)
         );
@@ -64,6 +65,7 @@ final class GenerateMojoTest {
         mojo.include = "**/*.g4";
         mojo.targetDir = temp.toFile();
         mojo.pdflatex = "pdflatex";
+        mojo.specials = "bar,boom,hello";
         mojo.latexDir = temp.resolve("latex-dir").toFile();
         mojo.execute();
         final Path target = temp.resolve("a/b/c/Simple.txt");
@@ -75,7 +77,7 @@ final class GenerateMojoTest {
             new String(Files.readAllBytes(target), StandardCharsets.UTF_8),
             Matchers.allOf(
                 Matchers.containsString("<bool> := \"TRUE\" | \"FALSE\" \\\\"),
-                Matchers.containsString("<alpha> := <bool> \\\\")
+                Matchers.containsString("<alpha> := <bool> | 'BAR' \\\\")
             )
         );
         final Path pdf = temp.resolve("a/b/c/Simple.pdf");

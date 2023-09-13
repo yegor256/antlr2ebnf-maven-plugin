@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="https://www.eolang.org" xmlns:g="http://www.w3.org/2001/03/XPath/grammar" id="to-ebnf" version="2.0">
+  <xsl:param name="specials" as="xs:string"/>
   <xsl:output method="text" encoding="UTF-8"/>
   <xsl:function name="eo:escape" as="xs:string">
     <xsl:param name="s" as="xs:string"/>
@@ -42,22 +43,13 @@ SOFTWARE.
   </xsl:function>
   <xsl:function name="eo:term" as="xs:string">
     <xsl:param name="t" as="xs:string"/>
+    <xsl:variable name="s" select="tokenize($specials, ',')"/>
     <xsl:variable name="r">
       <xsl:choose>
-        <xsl:when test="$t = 'eol'">
-          <xsl:text>'EOL'</xsl:text>
-        </xsl:when>
-        <xsl:when test="$t = 'eop'">
-          <xsl:text>'EOP'</xsl:text>
-        </xsl:when>
-        <xsl:when test="$t = 'tab'">
-          <xsl:text>'TAB'</xsl:text>
-        </xsl:when>
-        <xsl:when test="$t = 'untab'">
-          <xsl:text>'UNTAB'</xsl:text>
-        </xsl:when>
-        <xsl:when test="$t = 'eof'">
-          <xsl:text>'EOF'</xsl:text>
+        <xsl:when test="index-of($s, $t)">
+          <xsl:text>'</xsl:text>
+          <xsl:value-of select="upper-case($t)"/>
+          <xsl:text>'</xsl:text>
         </xsl:when>
         <xsl:otherwise>
           <xsl:text>&lt;</xsl:text>
@@ -75,7 +67,15 @@ SOFTWARE.
       <xsl:value-of select="'&#10;'"/>
       <xsl:text>% Use native-enbf LaTeX package to render this: https://ctan.org/pkg/naive-ebnf</xsl:text>
       <xsl:value-of select="'&#10;'"/>
-      <xsl:apply-templates select="g:production[@name!='eof' and @name!='eol' and @name!='eop']"/>
+      <xsl:variable name="s" select="tokenize($specials, ',')"/>
+      <xsl:if test="not(empty($s))">
+        <xsl:text>% </xsl:text>
+        <xsl:value-of select="count($s)"/>
+        <xsl:text> specials: </xsl:text>
+        <xsl:value-of select="string-join($s, ', ')"/>
+        <xsl:value-of select="'&#10;'"/>
+      </xsl:if>
+      <xsl:apply-templates select="g:production[not(index-of($s, @name))]"/>
     </xsl:element>
   </xsl:template>
   <xsl:template match="g:production">

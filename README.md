@@ -44,6 +44,7 @@ Just add it to `pom.xml`:
               <targetDir>target/ebnf</targetDir>
               <convertDir>${project.build.directory}/convert</convertDir>
               <pdflatex>/opt/homebrew/bin/pdflatex</pdflatex>
+              <specials>eol,eop</specials>
               <latexDir>target/ebnf-latex</latexDir>
             </configuration>
           </execution>
