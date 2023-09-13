@@ -37,16 +37,6 @@ Just add it to `pom.xml`:
             <goals>
               <goal>generate</goal>
             </goals>
-            <configuration>
-              <skip>false</skip>
-              <skipLatex>false</skipLatex>
-              <sourceDir>src/main/antlr4</sourceDir>
-              <targetDir>target/ebnf</targetDir>
-              <convertDir>${project.build.directory}/convert</convertDir>
-              <pdflatex>/opt/homebrew/bin/pdflatex</pdflatex>
-              <specials>eol,eop</specials>
-              <latexDir>target/ebnf-latex</latexDir>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -82,3 +72,20 @@ $ convert -density 300 -quality 100 -transparent white -colorspace RGB crop.pdf 
 ```
 
 Should work. If it doesn't, submit a ticket, I will try to help.
+
+## Options
+
+Here is the full list of options that you may use in the `<configuration>`
+of the plugin:
+
+  * `skip` — disables the execution of the plugin
+  * `skipLatex` — skips PDF generation step, just generates the `.txt` file
+  * `sourceDir` — the directory with `.g4` files 
+  * `targetDir` — the directory where `.txt` and `.pdf` files will be generated 
+  * `convertDir` — the directory with `.jar` files of the "convert" tool
+  * `pdflatex` - the name of the `pdflatex` binary 
+  * `specials` — the list of terms that will be converted to ENBF specials
+  * `latexDir` — the directory with temporary LaTeX files
+
+More of them you can find in 
+[`GenerateMojo.java`](https://github.com/yegor256/antlr2ebnf-maven-plugin/blob/master/src/main/java/com/yegor256/antlr2ebnf/GenerateMojo.java).
