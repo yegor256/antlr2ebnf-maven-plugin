@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -429,6 +430,16 @@ public final class GenerateMojo extends AbstractMojo {
                     this.convertDir
                 )
             );
+        }
+        for (final File jar : jars) {
+            if (!"jar".equals(FilenameUtils.getExtension(jar.getAbsolutePath()))) {
+                throw new IOException(
+                    String.format(
+                        "This is not a JAR file: '%s'",
+                        jar
+                    )
+                );
+            }
         }
         Logger.info(
             this, "Found %d JARs of the 'convert' tool in '%s'",
