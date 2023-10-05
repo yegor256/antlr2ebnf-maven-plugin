@@ -22,10 +22,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="https://www.eolang.org" xmlns:g="http://www.w3.org/2001/03/XPath/grammar" id="to-ebnf" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:e="ebnf2antlr" xmlns:g="http://www.w3.org/2001/03/XPath/grammar" id="to-ebnf" version="2.0">
   <xsl:param name="specials" as="xs:string"/>
+  <xsl:param name="margin" as="xs:integer"/>
   <xsl:output method="text" encoding="UTF-8"/>
-  <xsl:function name="eo:escape" as="xs:string">
+  <xsl:function name="e:escape" as="xs:string">
     <xsl:param name="s" as="xs:string"/>
     <xsl:variable name="r0" select="$s"/>
     <xsl:variable name="r1" select="replace($r0, '\\', '\\textbackslash{}')"/>
@@ -41,7 +42,7 @@ SOFTWARE.
     <xsl:variable name="r11" select="replace($r10, &quot;'&quot;, '\\textquotesingle{}')"/>
     <xsl:value-of select="$r11"/>
   </xsl:function>
-  <xsl:function name="eo:term" as="xs:string">
+  <xsl:function name="e:term" as="xs:string">
     <xsl:param name="t" as="xs:string"/>
     <xsl:variable name="s" select="tokenize($specials, ',')"/>
     <xsl:variable name="r">
@@ -67,11 +68,15 @@ SOFTWARE.
       <xsl:value-of select="'&#10;'"/>
       <xsl:text>% Use native-enbf LaTeX package to render this: https://ctan.org/pkg/naive-ebnf</xsl:text>
       <xsl:value-of select="'&#10;'"/>
+      <xsl:text>% margin: </xsl:text>
+      <xsl:value-of select="$margin"/>
+      <xsl:value-of select="'&#10;'"/>
       <xsl:variable name="s" select="tokenize($specials, ',')"/>
       <xsl:if test="not(empty($s))">
         <xsl:text>% </xsl:text>
+        <xsl:text> specials (</xsl:text>
         <xsl:value-of select="count($s)"/>
-        <xsl:text> specials: </xsl:text>
+        <xsl:text>): </xsl:text>
         <xsl:value-of select="string-join($s, ', ')"/>
         <xsl:value-of select="'&#10;'"/>
       </xsl:if>
@@ -79,7 +84,7 @@ SOFTWARE.
     </xsl:element>
   </xsl:template>
   <xsl:template match="g:production">
-    <xsl:value-of select="eo:term(eo:escape(@name))"/>
+    <xsl:value-of select="e:term(e:escape(@name))"/>
     <xsl:text> := </xsl:text>
     <xsl:apply-templates select="g:*"/>
     <xsl:text> \\</xsl:text>
@@ -109,22 +114,50 @@ SOFTWARE.
       <xsl:text> ) </xsl:text>
     </xsl:if>
   </xsl:template>
-  <xsl:template match="g:choice">
+  <xsl:function name="e:textualize">
+    <xsl:param name="node" as="node()"/>
     <xsl:variable name="txt">
-      <xsl:for-each select="g:*">
-        <xsl:if test="position() &gt; 1">
-          <xsl:text> | </xsl:text>
-        </xsl:if>
-        <xsl:apply-templates select="."/>
-      </xsl:for-each>
+      <xsl:value-of select="string-join($node//text()[normalize-space(.)!=''], ' ')"/>
+      <xsl:value-of select="$node/@name"/>
     </xsl:variable>
+    <xsl:value-of select="$txt"/>
+  </xsl:function>
+  <xsl:template match="g:choice">
     <xsl:choose>
       <xsl:when test="ancestor::g:production[count(child::*) = 1]">
-        <xsl:value-of select="$txt"/>
+        <xsl:for-each select="g:*">
+          <xsl:variable name="before">
+            <xsl:for-each select="preceding-sibling::*">
+              <xsl:value-of select="e:textualize(.)"/>
+            </xsl:for-each>
+          </xsl:variable>
+          <xsl:variable name="after">
+            <xsl:value-of select="$before"/>
+            <xsl:value-of select="e:textualize(.)"/>
+          </xsl:variable>
+          <xsl:if test="position() &gt; 1">
+            <xsl:choose>
+              <xsl:when test="ceiling(string-length($after) div $margin) &gt; ceiling(string-length($before) div $margin)">
+                <xsl:text>\\</xsl:text>
+                <xsl:value-of select="'&#10;'"/>
+                <xsl:text>   || </xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text> | </xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:if>
+          <xsl:apply-templates select="."/>
+        </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text> ( </xsl:text>
-        <xsl:value-of select="$txt"/>
+        <xsl:for-each select="g:*">
+          <xsl:if test="position() &gt; 1">
+            <xsl:text> | </xsl:text>
+          </xsl:if>
+          <xsl:apply-templates select="."/>
+        </xsl:for-each>
         <xsl:text> ) </xsl:text>
       </xsl:otherwise>
     </xsl:choose>
@@ -140,7 +173,7 @@ SOFTWARE.
         </xsl:when>
         <xsl:otherwise>
           <xsl:text> "</xsl:text>
-          <xsl:value-of select="eo:escape(.)"/>
+          <xsl:value-of select="e:escape(.)"/>
           <xsl:text>" </xsl:text>
         </xsl:otherwise>
       </xsl:choose>
@@ -193,18 +226,18 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <xsl:template match="g:char">
-    <xsl:value-of select="eo:escape(text())"/>
+    <xsl:value-of select="e:escape(text())"/>
   </xsl:template>
   <xsl:template match="g:ref">
     <xsl:text> </xsl:text>
     <xsl:choose>
       <xsl:when test="matches(@name, '^[A-Z].*')">
         <xsl:text>'</xsl:text>
-        <xsl:value-of select="eo:escape(@name)"/>
+        <xsl:value-of select="e:escape(@name)"/>
         <xsl:text>'</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="eo:term(eo:escape(@name))"/>
+        <xsl:value-of select="e:term(e:escape(@name))"/>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text> </xsl:text>

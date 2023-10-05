@@ -52,7 +52,7 @@ final class GenerateMojoTest {
             String.join(
                 System.lineSeparator(),
                 "grammar Simple;",
-                "program: alpha | beta;",
+                "program: alpha | zeta | gamma | delta | sigma | lambda;",
                 "alpha: BOOL | BAR;",
                 "beta: 'test';",
                 "BAR: '\\n';",
@@ -63,6 +63,7 @@ final class GenerateMojoTest {
         mojo.convertDir = new File("target/convert");
         mojo.sourceDir = temp.toFile();
         mojo.include = "**/*.g4";
+        mojo.margin = 16;
         mojo.targetDir = temp.toFile();
         mojo.pdflatex = "pdflatex";
         mojo.specials = "bar,boom,hello";
@@ -77,7 +78,9 @@ final class GenerateMojoTest {
             new String(Files.readAllBytes(target), StandardCharsets.UTF_8),
             Matchers.allOf(
                 Matchers.containsString("<bool> := \"TRUE\" | \"FALSE\" \\\\"),
-                Matchers.containsString("<alpha> := <bool> | 'BAR' \\\\")
+                Matchers.containsString("<alpha> := <bool> | 'BAR' \\\\"),
+                Matchers.containsString("<program> := <alpha> | <zeta> | <gamma> \\\\"),
+                Matchers.containsString("|| <delta> | <sigma> | <lambda> \\\\")
             )
         );
         final Path pdf = temp.resolve("a/b/c/Simple.pdf");

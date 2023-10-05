@@ -26,6 +26,7 @@ package com.yegor256.antlr2ebnf;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.Jaxec;
 import com.yegor256.xsline.StXSL;
@@ -70,6 +71,15 @@ import org.slf4j.impl.StaticLoggerBinder;
     threadSafe = true
 )
 public final class GenerateMojo extends AbstractMojo {
+
+    /**
+     * XSL to convert to EBNF text.
+     */
+    private static final XSL TO_EBNF = XSLDocument.make(
+        GenerateMojo.class.getResource(
+            "/com/yegor256/antlr2ebnf/to-ebnf.xsl"
+        )
+    );
 
     /**
      * Source directory, with ".g4" files, either directly in it
@@ -201,6 +211,19 @@ public final class GenerateMojo extends AbstractMojo {
         defaultValue = "pdflatex"
     )
     public String pdflatex;
+
+    /**
+     * Maximum length of a line that is tolerated.
+     *
+     * <p>If the line is longer, the plugin will make an attempt to break
+     * it into a few lines.</p>
+     */
+    @Parameter(
+        property = "antlr2ebnf.margin",
+        required = true,
+        defaultValue = "100"
+    )
+    public int margin = 100;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -363,11 +386,9 @@ public final class GenerateMojo extends AbstractMojo {
                         .back(),
                     new TrDefault<>(
                         new StXSL(
-                            new XSLDocument(
-                                GenerateMojo.class.getResource(
-                                    "/com/yegor256/antlr2ebnf/to-ebnf.xsl"
-                                )
-                            ).with("specials", this.specials)
+                            GenerateMojo.TO_EBNF
+                                .with("specials", this.specials)
+                                .with("margin", this.margin)
                         )
                     )
                 ),
