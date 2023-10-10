@@ -30,7 +30,7 @@ Just add it to `pom.xml`:
       <plugin>
         <groupId>com.yegor256</groupId>
         <artifactId>antlr2ebnf-maven-plugin</artifactId>
-        <version>0.0.5</version>
+        <version>0.0.7</version>
         <executions>
           <execution>
             <phase>initialize</phase>
