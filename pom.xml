@@ -156,6 +156,12 @@ SOFTWARE.
       logging system. -->
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>farea</artifactId>
+      <version>0.0.8</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

@@ -23,6 +23,7 @@
  */
 package com.yegor256.antlr2ebnf;
 
+import com.yegor256.farea.Farea;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -42,6 +43,35 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.0.1
  */
 final class GenerateMojoTest {
+    @Test
+    void generatesEbnfViaRealMaven(@TempDir final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.files().file("src/main/antlr4/Program.g4").write(
+                    String.join(
+                        System.lineSeparator(),
+                        "grammar Program;",
+                        "program: ONE | TWO;",
+                        "ONE: '1';",
+                        "TWO: '2';"
+                    )
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .goals("generate")
+                    .phase("compile")
+                    .configuration()
+                    .set("convertDir", new File("target/convert").getAbsolutePath());
+                f.exec("compile");
+                MatcherAssert.assertThat(
+                    temp.resolve("target/ebnf/Program.pdf").toFile().exists(),
+                    Matchers.is(true)
+                );
+            }
+        );
+    }
+
     @Test
     void generatesEbnf(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("a/b/c/Simple.g4");
