@@ -242,13 +242,20 @@ public final class GenerateMojo extends AbstractMojo {
             );
         }
         Logger.info(this, "Searching for .g4 files in '%s'", this.sourceDir);
+        int total = 0;
         try {
             for (final File src
                 : FileUtils.getFiles(this.sourceDir, this.include, this.exclude)) {
                 this.each(src.toPath());
+                ++total;
             }
         } catch (final IOException ex) {
             throw new MojoFailureException(ex);
+        }
+        if (total == 0) {
+            Logger.info(this, "No files converted");
+        } else {
+            Logger.info(this, "Converted %d file(s)", total);
         }
     }
 
