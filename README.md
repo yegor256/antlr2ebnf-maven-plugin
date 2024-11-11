@@ -7,19 +7,19 @@
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/antlr2ebnf-maven-plugin)](https://hitsofcode.com/view/github/yegor256/antlr2ebnf-maven-plugin)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/antlr2ebnf-maven-plugin/blob/master/LICENSE.txt)
 
-This Maven plugin takes your 
-[ANTLR4](https://github.com/antlr/antlr4) grammar `.g4` files 
+This Maven plugin takes your
+[ANTLR4](https://github.com/antlr/antlr4) grammar `.g4` files
 and generates
 [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)
-in the format expected by the 
+in the format expected by the
 [naive-ebnf](https://ctan.org/pkg/naive-ebnf) LaTeX package.
-Then, using `pdflatex` installed on your computer, 
-the plugin renders the generated EBNF as a PDF document 
+Then, using `pdflatex` installed on your computer,
+the plugin renders the generated EBNF as a PDF document
 (you can skip that with the `skipLatex` configuration option).
-Then, you can transform this PDF to SVG or PNG formats, 
+Then, you can transform this PDF to SVG or PNG formats,
 using the tools explained below.
 
-The plugin expects you to have ANTLR-to-XML converter made by 
+The plugin expects you to have ANTLR-to-XML converter made by
 [Gunther Rademacher](https://www.bottlecaps.de/convert/),
 in the `target/convert`
 directory (normally, there should be five `.jar` files).
@@ -64,10 +64,10 @@ mvn com.yegor256:antlr2ebnf-maven-plugin:generate \
   -Dantlr2ebnf.convertDir=/tmp/convert-jars
 ```
 
-Then, if you need PNG and SVG, use 
+Then, if you need PNG and SVG, use
 [pdfcrop](https://ctan.org/pkg/pdfcrop),
 [pdf2svg](https://manpages.ubuntu.com/manpages/xenial/man1/pdf2svg.1.html),
-and 
+and
 [convert](https://imagemagick.org/script/convert.php):
 
 ```bash

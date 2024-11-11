@@ -59,6 +59,7 @@ final class GenerateMojoTest {
                 f.build()
                     .plugins()
                     .appendItself()
+                    .execution()
                     .goals("generate")
                     .phase("compile")
                     .configuration()
