@@ -371,7 +371,7 @@ public final class GenerateMojo extends AbstractMojo {
             "de.bottlecaps.convert.Convert",
             "-xml",
             antlr.toString()
-        ).exec();
+        ).exec().stdout();
         if (!output.startsWith("<?xml")) {
             Logger.warn(this, "Stdout: %n%s", output);
             throw new IOException("The output of the 'convert' tool doesn't look like XML");
