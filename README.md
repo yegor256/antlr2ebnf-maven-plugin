@@ -95,4 +95,3 @@ of the plugin:
 More of them you can find in [`GenerateMojo.java`][mojo].
 
 [mojo]: https://github.com/yegor256/antlr2ebnf-maven-plugin/blob/master/src/main/java/com/yegor256/antlr2ebnf/GenerateMojo.java
-
