@@ -20,33 +20,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-name: codecov
-on:
+name: copyrights
+'on':
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 jobs:
-  codecov:
-    runs-on: ubuntu-22.04
+  copyrights:
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: teatimeguest/setup-texlive-action@v3.3.3
+      - uses: yegor256/copyrights-action@0.0.8
         with:
-          update-all-packages: true
-          packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: 11
-      - uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            maven-
-      - run: mvn install -Pjacoco
-      - uses: codecov/codecov-action@v4.0.0-beta.3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./target/site/jacoco/jacoco.xml
-          fail_ci_if_error: true
+          globs: >-
+            **/LICENSE.txt
+            **/*.sh
+            **/*.yml
+            **/*.yaml
+            **/*.eo
+            **/*.xmir
+            **/*.xml
+            **/*.xsl
+            **/*.xsd
+            **/*.ini
+            **/*.java
+            **/*.g4
+            **/*.properties
+            **/*.groovy
