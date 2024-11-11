@@ -78,6 +78,9 @@ convert -density 300 -quality 100 -transparent white -colorspace RGB crop.pdf Sa
 
 Should work. If it doesn't, submit a ticket, I will try to help.
 
+See how this plugin generates PDF diagrams in 
+[objectionary/eo](https://github.com/objectionary/eo).
+
 ## Options
 
 Here is the full list of options that you may use in the `<configuration>`
