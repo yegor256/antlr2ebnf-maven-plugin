@@ -54,7 +54,7 @@ final class GenerateMojoTest {
                         "program: ONE | TWO;",
                         "ONE: '1';",
                         "TWO: '2';"
-                    )
+                    ).getBytes(StandardCharsets.UTF_8)
                 );
                 f.build()
                     .plugins()
