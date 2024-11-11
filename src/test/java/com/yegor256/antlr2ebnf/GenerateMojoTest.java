@@ -66,6 +66,7 @@ final class GenerateMojoTest {
                     .set("convertDir", new File("target/convert").getAbsolutePath());
                 f.exec("compile");
                 MatcherAssert.assertThat(
+                    "translates to PDF as expected",
                     temp.resolve("target/ebnf/Program.pdf").toFile().exists(),
                     Matchers.is(true)
                 );
@@ -102,10 +103,12 @@ final class GenerateMojoTest {
         mojo.execute();
         final Path target = temp.resolve("a/b/c/Simple.txt");
         MatcherAssert.assertThat(
+            "the file is there",
             target.toFile().exists(),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
+            "all terms are there",
             new String(Files.readAllBytes(target), StandardCharsets.UTF_8),
             Matchers.allOf(
                 Matchers.containsString("<bool> := \"TRUE\" | \"FALSE\" \\\\"),
@@ -116,6 +119,7 @@ final class GenerateMojoTest {
         );
         final Path pdf = temp.resolve("a/b/c/Simple.pdf");
         MatcherAssert.assertThat(
+            "this file is also there",
             pdf.toFile().exists(),
             Matchers.is(true)
         );
@@ -148,6 +152,7 @@ final class GenerateMojoTest {
         mojo.execute();
         final Path pdf = temp.resolve("Bar.pdf");
         MatcherAssert.assertThat(
+            "the PDF has been generated",
             pdf.toFile().exists(),
             Matchers.is(true)
         );
@@ -176,11 +181,13 @@ final class GenerateMojoTest {
         mojo.execute();
         final Path target = temp.resolve("Foo.txt");
         MatcherAssert.assertThat(
+            "the text file is there",
             target.toFile().exists(),
             Matchers.is(true)
         );
         final Path pdf = temp.resolve("Foo.pdf");
         MatcherAssert.assertThat(
+            "the PDF is also there",
             pdf.toFile().exists(),
             Matchers.is(false)
         );
