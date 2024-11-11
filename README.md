@@ -1,3 +1,5 @@
+# ANTLR4 to EBNF in PDF Converter (Maven Plugin)
+
 [![mvn](https://github.com/yegor256/antlr2ebnf-maven-plugin/actions/workflows/mvn.yml/badge.svg)](https://github.com/yegor256/antlr2ebnf-maven-plugin/actions/workflows/mvn.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.yegor256/antlr2ebnf-maven-plugin.svg)](https://maven-badges.herokuapp.com/maven-central/com.yegor256/antlr2ebnf-maven-plugin)
 [![Javadoc](http://www.javadoc.io/badge/com.yegor256/antlr2ebnf-maven-plugin.svg)](http://www.javadoc.io/doc/com.yegor256/antlr2ebnf-maven-plugin)
@@ -7,7 +9,8 @@
 
 This Maven plugin takes your 
 [ANTLR4](https://github.com/antlr/antlr4) grammar `.g4` files 
-and generates [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)
+and generates
+[EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)
 in the format expected by the 
 [naive-ebnf](https://ctan.org/pkg/naive-ebnf) LaTeX package.
 Then, using `pdflatex` installed on your computer, 
@@ -17,7 +20,8 @@ Then, you can transform this PDF to SVG or PNG formats,
 using the tools explained below.
 
 The plugin expects you to have ANTLR-to-XML converter made by 
-[Gunther Rademacher](https://www.bottlecaps.de/convert/), in the `target/convert`
+[Gunther Rademacher](https://www.bottlecaps.de/convert/),
+in the `target/convert`
 directory (normally, there should be five `.jar` files).
 
 Just add it to `pom.xml`:
@@ -50,10 +54,11 @@ the EBNF will be generated in the `target/ebnf/foo/bar/Sample.txt` path and
 the PDF will be in the `target/ebnf/foo/bar/Sample.pdf` file.
 
 You can also run this plugin in one line, without adding it to any `pom.xml`
-(Maven is still used, but no project is required, just a directory with `.g4` files):
+(Maven is still used, but no project is required, just a directory
+with `.g4` files):
 
 ```bash
-$ mvn com.yegor256:antlr2ebnf-maven-plugin:generate \
+mvn com.yegor256:antlr2ebnf-maven-plugin:generate \
   -Dantlr2ebnf.sourceDir=/tmp/antlr4 \
   -Dantlr2ebnf.targetDir=/tmp/ebnf \
   -Dantlr2ebnf.convertDir=/tmp/convert-jars
@@ -66,9 +71,9 @@ and
 [convert](https://imagemagick.org/script/convert.php):
 
 ```bash
-$ pdfcrop --margins '10 10 10 10' Sample.pdf crop.pdf
-$ pdf2svg crop.pdf Sample.svg
-$ convert -density 300 -quality 100 -transparent white -colorspace RGB crop.pdf Sample.png
+pdfcrop --margins '10 10 10 10' Sample.pdf crop.pdf
+pdf2svg crop.pdf Sample.svg
+convert -density 300 -quality 100 -transparent white -colorspace RGB crop.pdf Sample.png
 ```
 
 Should work. If it doesn't, submit a ticket, I will try to help.
@@ -78,14 +83,16 @@ Should work. If it doesn't, submit a ticket, I will try to help.
 Here is the full list of options that you may use in the `<configuration>`
 of the plugin:
 
-  * `skip` — disables the execution of the plugin
-  * `skipLatex` — skips PDF generation step, just generates the `.txt` file
-  * `sourceDir` — the directory with `.g4` files 
-  * `targetDir` — the directory where `.txt` and `.pdf` files will be generated 
-  * `convertDir` — the directory with `.jar` files of the "convert" tool
-  * `pdflatex` - the name of the `pdflatex` binary 
-  * `specials` — the list of terms that will be converted to ENBF specials
-  * `latexDir` — the directory with temporary LaTeX files
+* `skip` — disables the execution of the plugin
+* `skipLatex` — skips PDF generation step, just generates the `.txt` file
+* `sourceDir` — the directory with `.g4` files
+* `targetDir` — the directory where `.txt` and `.pdf` files will be generated
+* `convertDir` — the directory with `.jar` files of the "convert" tool
+* `pdflatex` - the name of the `pdflatex` binary
+* `specials` — the list of terms that will be converted to ENBF specials
+* `latexDir` — the directory with temporary LaTeX files
 
-More of them you can find in 
-[`GenerateMojo.java`](https://github.com/yegor256/antlr2ebnf-maven-plugin/blob/master/src/main/java/com/yegor256/antlr2ebnf/GenerateMojo.java).
+More of them you can find in [`GenerateMojo.java`][mojo].
+
+[mojo]: https://github.com/yegor256/antlr2ebnf-maven-plugin/blob/master/src/main/java/com/yegor256/antlr2ebnf/GenerateMojo.java
+
