@@ -5,7 +5,7 @@
 architect:
   - yegor256
 docker:
-  image: yegor256/rultor-image:1.21.0
+  image: yegor256/rultor-image:1.24.0
 assets:
   settings.xml: yegor256/home#assets/antlr2ebnf-maven-plugin/settings.xml
   pubring.gpg: yegor256/home#assets/pubring.gpg
