@@ -1,6 +1,5 @@
-*.iml
-.DS_Store
 .classpath
+.DS_Store
 .factorypath
 .idea/
 .mvn/wrapper/maven-wrapper.jar
@@ -8,5 +7,6 @@
 .recommenders
 .settings
 .vscode/
+*.iml
 node_modules/
 target/
