@@ -23,6 +23,7 @@ The plugin expects you to have ANTLR-to-XML converter made by
 [Gunther Rademacher](https://www.bottlecaps.de/convert/),
 in the `target/convert`
 directory (normally, there should be five `.jar` files).
+It has been recently published on GitHub: [GuntherRademacher/ebnf-convert].
 
 Just add it to `pom.xml`:
 
@@ -98,3 +99,4 @@ of the plugin:
 More of them you can find in [`GenerateMojo.java`][mojo].
 
 [mojo]: https://github.com/yegor256/antlr2ebnf-maven-plugin/blob/master/src/main/java/com/yegor256/antlr2ebnf/GenerateMojo.java
+[GuntherRademacher/ebnf-convert]: https://github.com/GuntherRademacher/ebnf-convert
