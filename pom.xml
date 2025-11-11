@@ -140,7 +140,7 @@
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>farea</artifactId>
-      <version>0.8.0</version>
+      <version>0.15.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
