@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2023-2025 Yegor Bugayenko
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2026 Yegor Bugayenko
  * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:e="ebnf2antlr" xmlns:g="http://www.w3.org/2001/03/XPath/grammar" id="to-ebnf" version="2.0">
