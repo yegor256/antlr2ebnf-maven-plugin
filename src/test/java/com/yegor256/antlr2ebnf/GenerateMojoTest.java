@@ -166,6 +166,14 @@ final class GenerateMojoTest {
             target.toFile().exists(),
             Matchers.is(true)
         );
+        MatcherAssert.assertThat(
+            "the text file names the generator",
+            new String(Files.readAllBytes(target), StandardCharsets.UTF_8),
+            Matchers.allOf(
+                Matchers.containsString("antlr2ebnf-maven-plugin"),
+                Matchers.not(Matchers.containsString("XMIRTest"))
+            )
+        );
         final Path pdf = temp.resolve("Foo.pdf");
         MatcherAssert.assertThat(
             "the PDF is also there",
