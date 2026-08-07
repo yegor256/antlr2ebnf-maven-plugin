@@ -42,7 +42,6 @@ import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Generates EBNF.
- *
  * @since 0.0.1
  * @checkstyle VisibilityModifierCheck (500 lines)
  * @checkstyle MemberNameCheck (500 lines)
@@ -76,7 +75,6 @@ public final class GenerateMojo extends AbstractMojo {
 
     /**
      * Glob mask for ".g4" files to find in the source directory.
-     *
      * @since 0.0.2
      */
     @Parameter(
@@ -87,7 +85,6 @@ public final class GenerateMojo extends AbstractMojo {
 
     /**
      * Glob mask for ".g4" files to exclude in the source directory.
-     *
      * @since 0.0.2
      */
     @Parameter(
@@ -119,7 +116,6 @@ public final class GenerateMojo extends AbstractMojo {
 
     /**
      * Fit the entire content into one PDF page.
-     *
      * @since 0.0.5
      */
     @Parameter(
@@ -148,7 +144,6 @@ public final class GenerateMojo extends AbstractMojo {
 
     /**
      * Do we need to skip the entire plugin execution?
-     *
      * @since 0.0.2
      */
     @Parameter(
@@ -253,17 +248,16 @@ public final class GenerateMojo extends AbstractMojo {
         if (this.skipLatex) {
             Logger.info(this, "PDF generation skipped due to 'skipLatex' flag");
         } else {
-            this.toPdf(target);
+            this.compile(target);
         }
     }
 
     /**
-     * Convert to PDF.
+     * Compile to PDF.
      * @param ebnf The location of the EBNF text
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.PrematureDeclaration")
-    private void toPdf(final Path ebnf) throws IOException {
+    private void compile(final Path ebnf) throws IOException {
         final Path dir = this.latexDir.toPath();
         if (ebnf.getParent().startsWith(dir)) {
             throw new IOException(
@@ -287,18 +281,19 @@ public final class GenerateMojo extends AbstractMojo {
         if (this.fitToPage) {
             suffix = "-fitToPage";
         }
-        final String bnf = new String(Files.readAllBytes(ebnf), StandardCharsets.UTF_8);
         final String tex = new IoCheckedText(
             new TextOf(
                 new ResourceOf(
                     String.format("com/yegor256/antlr2ebnf/ebnf%s.tex", suffix)
                 )
             )
-        ).asString().replace("EBNF", bnf).trim();
+        ).asString().replace(
+            "EBNF", new String(Files.readAllBytes(ebnf), StandardCharsets.UTF_8)
+        ).trim();
         Files.write(dir.resolve("article.tex"), tex.getBytes(StandardCharsets.UTF_8));
         Logger.debug(
             this, "LaTeX before processing (%d lines):%n%s",
-            tex.split("\n").length, tex
+            tex.lines().count(), tex
         );
         Logger.debug(
             this,
@@ -338,7 +333,6 @@ public final class GenerateMojo extends AbstractMojo {
      * @return The EBNF as text
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.PrematureDeclaration")
     private String toEbnf(final Path antlr) throws IOException {
         final List<String> jars = Stream.of(this.convert())
             .filter(file -> !file.isDirectory())
@@ -383,7 +377,7 @@ public final class GenerateMojo extends AbstractMojo {
             Logger.info(
                 this,
                 "EBNF generated (%d lines) by the 'convert' and XSLT transformations in %[ms]s",
-                ebnf.split("\n").length, System.currentTimeMillis() - start
+                ebnf.lines().count(), System.currentTimeMillis() - start
             );
         }
         return ebnf;

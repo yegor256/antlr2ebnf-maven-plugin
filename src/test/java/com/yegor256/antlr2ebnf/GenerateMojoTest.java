@@ -20,23 +20,15 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link GenerateMojo}.
- *
  * @since 0.0.1
  */
 final class GenerateMojoTest {
+
     @Test
     void generatesEbnfViaRealMaven(@TempDir final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
-                f.files().file("src/main/antlr4/Program.g4").write(
-                    String.join(
-                        System.lineSeparator(),
-                        "grammar Program;",
-                        "program: ONE | TWO;",
-                        "ONE: '1';",
-                        "TWO: '2';"
-                    ).getBytes(StandardCharsets.UTF_8)
-                );
+                GenerateMojoTest.grammar(f);
                 f.build()
                     .plugins()
                     .appendItself()
@@ -56,41 +48,23 @@ final class GenerateMojoTest {
     }
 
     @Test
-    void generatesEbnf(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("a/b/c/Simple.g4");
-        final Path dir = src.getParent();
-        dir.toFile().mkdirs();
-        Files.write(
-            src,
-            String.join(
-                System.lineSeparator(),
-                "grammar Simple;",
-                "program: alpha | zeta | gamma | delta | sigma | lambda;",
-                "alpha: BOOL | BAR;",
-                "beta: 'test';",
-                "BAR: '\\n';",
-                "BOOL: 'TRUE' | 'FALSE';"
-            ).getBytes(StandardCharsets.UTF_8)
-        );
-        final GenerateMojo mojo = new GenerateMojo();
-        mojo.convertDir = new File("target/convert");
-        mojo.sourceDir = temp.toFile();
-        mojo.include = "**/*.g4";
-        mojo.margin = 16;
-        mojo.targetDir = temp.toFile();
-        mojo.pdflatex = "pdflatex";
-        mojo.specials = "bar,boom,hello";
-        mojo.latexDir = temp.resolve("latex-dir").toFile();
-        mojo.execute();
-        final Path target = temp.resolve("a/b/c/Simple.txt");
+    void generatesTextFile(@TempDir final Path temp) throws Exception {
+        GenerateMojoTest.simple(temp);
         MatcherAssert.assertThat(
             "the file is there",
-            target.toFile().exists(),
+            temp.resolve("a/b/c/Simple.txt").toFile().exists(),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void generatesTextWithAllTerms(@TempDir final Path temp) throws Exception {
+        GenerateMojoTest.simple(temp);
         MatcherAssert.assertThat(
             "all terms are there",
-            new String(Files.readAllBytes(target), StandardCharsets.UTF_8),
+            new String(
+                Files.readAllBytes(temp.resolve("a/b/c/Simple.txt")), StandardCharsets.UTF_8
+            ),
             Matchers.allOf(
                 Matchers.containsString("<bool> := \"TRUE\" | \"FALSE\" \\\\"),
                 Matchers.containsString("<alpha> := <bool> | 'BAR' \\\\"),
@@ -98,10 +72,14 @@ final class GenerateMojoTest {
                 Matchers.containsString("|| <delta> | <sigma> | <lambda> \\\\")
             )
         );
-        final Path pdf = temp.resolve("a/b/c/Simple.pdf");
+    }
+
+    @Test
+    void generatesPdfFile(@TempDir final Path temp) throws Exception {
+        GenerateMojoTest.simple(temp);
         MatcherAssert.assertThat(
             "this file is also there",
-            pdf.toFile().exists(),
+            temp.resolve("a/b/c/Simple.pdf").toFile().exists(),
             Matchers.is(true)
         );
     }
@@ -131,53 +109,44 @@ final class GenerateMojoTest {
         mojo.latexDir = temp.resolve("latex-dir").toFile();
         mojo.fitToPage = true;
         mojo.execute();
-        final Path pdf = temp.resolve("Bar.pdf");
         MatcherAssert.assertThat(
             "the PDF has been generated",
-            pdf.toFile().exists(),
+            temp.resolve("Bar.pdf").toFile().exists(),
             Matchers.is(true)
         );
     }
 
     @Test
-    void skipsLatex(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("Foo.g4");
-        final Path dir = src.getParent();
-        dir.toFile().mkdirs();
-        Files.write(
-            src,
-            String.join(
-                System.lineSeparator(),
-                "grammar Foo;",
-                "foo: 'HELLO';"
-            ).getBytes(StandardCharsets.UTF_8)
-        );
-        final GenerateMojo mojo = new GenerateMojo();
-        mojo.convertDir = new File("target/convert");
-        mojo.sourceDir = temp.toFile();
-        mojo.include = "**/*.g4";
-        mojo.targetDir = temp.toFile();
-        mojo.pdflatex = "/wrong-path-should-not-be-used";
-        mojo.skipLatex = true;
-        mojo.execute();
-        final Path target = temp.resolve("Foo.txt");
+    void generatesTextFileWhenLatexSkipped(@TempDir final Path temp) throws Exception {
+        GenerateMojoTest.foo(temp);
         MatcherAssert.assertThat(
             "the text file is there",
-            target.toFile().exists(),
+            temp.resolve("Foo.txt").toFile().exists(),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void textNamesGeneratorWhenLatexSkipped(@TempDir final Path temp) throws Exception {
+        GenerateMojoTest.foo(temp);
         MatcherAssert.assertThat(
             "the text file names the generator",
-            new String(Files.readAllBytes(target), StandardCharsets.UTF_8),
+            new String(
+                Files.readAllBytes(temp.resolve("Foo.txt")), StandardCharsets.UTF_8
+            ),
             Matchers.allOf(
                 Matchers.containsString("antlr2ebnf-maven-plugin"),
                 Matchers.not(Matchers.containsString("XMIRTest"))
             )
         );
-        final Path pdf = temp.resolve("Foo.pdf");
+    }
+
+    @Test
+    void doesNotGeneratePdfWhenLatexSkipped(@TempDir final Path temp) throws Exception {
+        GenerateMojoTest.foo(temp);
         MatcherAssert.assertThat(
-            "the PDF is also there",
-            pdf.toFile().exists(),
+            "the pdf is not there",
+            temp.resolve("Foo.pdf").toFile().exists(),
             Matchers.is(false)
         );
     }
@@ -198,10 +167,13 @@ final class GenerateMojoTest {
     }
 
     @Test
-    void skipsExecution() throws Exception {
+    void skipsExecution() {
         final GenerateMojo mojo = new GenerateMojo();
         mojo.skip = true;
-        mojo.execute();
+        Assertions.assertDoesNotThrow(
+            mojo::execute,
+            "the skip flag is ignored"
+        );
     }
 
     @Test
@@ -212,5 +184,87 @@ final class GenerateMojoTest {
             MojoExecutionException.class,
             () -> mojo.execute()
         );
+    }
+
+    /**
+     * Write the "Program.g4" grammar file.
+     * @param farea The environment
+     * @throws IOException If fails
+     */
+    private static void grammar(final Farea farea) throws IOException {
+        farea.files().file("src/main/antlr4/Program.g4").write(
+            String.join(
+                System.lineSeparator(),
+                "grammar Program;",
+                "program: ONE | TWO;",
+                "ONE: '1';",
+                "TWO: '2';"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+    }
+
+    /**
+     * Write the "Simple.g4" grammar file and run the mojo over it.
+     * @param temp The temporary directory
+     * @throws IOException If fails
+     * @throws MojoExecutionException If fails
+     * @throws MojoFailureException If fails
+     */
+    private static void simple(final Path temp)
+        throws IOException, MojoExecutionException, MojoFailureException {
+        final Path src = temp.resolve("a/b/c/Simple.g4");
+        src.getParent().toFile().mkdirs();
+        Files.write(
+            src,
+            String.join(
+                System.lineSeparator(),
+                "grammar Simple;",
+                "program: alpha | zeta | gamma | delta | sigma | lambda;",
+                "alpha: BOOL | BAR;",
+                "beta: 'test';",
+                "BAR: '\\n';",
+                "BOOL: 'TRUE' | 'FALSE';"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        final GenerateMojo mojo = new GenerateMojo();
+        mojo.convertDir = new File("target/convert");
+        mojo.sourceDir = temp.toFile();
+        mojo.include = "**/*.g4";
+        mojo.margin = 16;
+        mojo.targetDir = temp.toFile();
+        mojo.pdflatex = "pdflatex";
+        mojo.specials = "bar,boom,hello";
+        mojo.latexDir = temp.resolve("latex-dir").toFile();
+        mojo.execute();
+    }
+
+    /**
+     * Write the "Foo.g4" grammar file and run the mojo over it, with
+     * latex generation skipped.
+     * @param temp The temporary directory
+     * @throws IOException If fails
+     * @throws MojoExecutionException If fails
+     * @throws MojoFailureException If fails
+     */
+    private static void foo(final Path temp)
+        throws IOException, MojoExecutionException, MojoFailureException {
+        final Path src = temp.resolve("Foo.g4");
+        src.getParent().toFile().mkdirs();
+        Files.write(
+            src,
+            String.join(
+                System.lineSeparator(),
+                "grammar Foo;",
+                "foo: 'HELLO';"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        final GenerateMojo mojo = new GenerateMojo();
+        mojo.convertDir = new File("target/convert");
+        mojo.sourceDir = temp.toFile();
+        mojo.include = "**/*.g4";
+        mojo.targetDir = temp.toFile();
+        mojo.pdflatex = "/wrong-path-should-not-be-used";
+        mojo.skipLatex = true;
+        mojo.execute();
     }
 }
