@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2023-2026 Yegor Bugayenko
+# SPDX-License-Identifier: MIT
+---
+analyzer:
+  skip_excluded: true
+excludes:
+  scopes:
+    - pattern: "test"
+      reason: "TEST_DEPENDENCY_OF"
+      comment: "Test-only dependencies are not released with the plugin."
+    - pattern: "provided"
+      reason: "PROVIDED_DEPENDENCY_OF"
+      comment: "Provided dependencies come from Maven itself at runtime."
