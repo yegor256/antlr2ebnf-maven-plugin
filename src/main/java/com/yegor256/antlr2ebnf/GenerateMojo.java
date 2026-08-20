@@ -43,7 +43,6 @@ import org.slf4j.impl.StaticLoggerBinder;
 /**
  * Generates EBNF.
  * @since 0.0.1
- * @checkstyle VisibilityModifierCheck (500 lines)
  * @checkstyle MemberNameCheck (500 lines)
  */
 @Mojo(
@@ -228,11 +227,6 @@ public final class GenerateMojo extends AbstractMojo {
         }
     }
 
-    /**
-     * Convert one ANTLR file.
-     * @param antlr The path of it
-     * @throws IOException If fails
-     */
     private void each(final Path antlr) throws IOException {
         final String rel = antlr.toString().substring(this.sourceDir.toString().length() + 1);
         Logger.info(
@@ -252,11 +246,6 @@ public final class GenerateMojo extends AbstractMojo {
         }
     }
 
-    /**
-     * Compile to PDF.
-     * @param ebnf The location of the EBNF text
-     * @throws IOException If fails
-     */
     private void compile(final Path ebnf) throws IOException {
         final Path dir = this.latexDir.toPath();
         if (ebnf.getParent().startsWith(dir)) {
@@ -327,12 +316,6 @@ public final class GenerateMojo extends AbstractMojo {
         }
     }
 
-    /**
-     * Convert to EBNF.
-     * @param antlr The location of the ANTLR file
-     * @return The EBNF as text
-     * @throws IOException If fails
-     */
     private String toEbnf(final Path antlr) throws IOException {
         final List<String> jars = Stream.of(this.convert())
             .filter(file -> !file.isDirectory())
@@ -383,11 +366,6 @@ public final class GenerateMojo extends AbstractMojo {
         return ebnf;
     }
 
-    /**
-     * Find all JAR files required by the converter.
-     * @return The list of JAR files
-     * @throws IOException If fails
-     */
     private File[] convert() throws IOException {
         if (!this.convertDir.exists()) {
             throw new IOException(

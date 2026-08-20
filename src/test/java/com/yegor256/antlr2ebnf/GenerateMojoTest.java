@@ -186,11 +186,6 @@ final class GenerateMojoTest {
         );
     }
 
-    /**
-     * Write the "Program.g4" grammar file.
-     * @param farea The environment
-     * @throws IOException If fails
-     */
     private static void grammar(final Farea farea) throws IOException {
         farea.files().file("src/main/antlr4/Program.g4").write(
             String.join(
@@ -203,13 +198,6 @@ final class GenerateMojoTest {
         );
     }
 
-    /**
-     * Write the "Simple.g4" grammar file and run the mojo over it.
-     * @param temp The temporary directory
-     * @throws IOException If fails
-     * @throws MojoExecutionException If fails
-     * @throws MojoFailureException If fails
-     */
     private static void simple(final Path temp)
         throws IOException, MojoExecutionException, MojoFailureException {
         final Path src = temp.resolve("a/b/c/Simple.g4");
@@ -238,14 +226,6 @@ final class GenerateMojoTest {
         mojo.execute();
     }
 
-    /**
-     * Write the "Foo.g4" grammar file and run the mojo over it, with
-     * latex generation skipped.
-     * @param temp The temporary directory
-     * @throws IOException If fails
-     * @throws MojoExecutionException If fails
-     * @throws MojoFailureException If fails
-     */
     private static void foo(final Path temp)
         throws IOException, MojoExecutionException, MojoFailureException {
         final Path src = temp.resolve("Foo.g4");
