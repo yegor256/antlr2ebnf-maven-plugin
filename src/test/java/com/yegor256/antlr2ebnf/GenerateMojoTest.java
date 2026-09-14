@@ -20,6 +20,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link GenerateMojo}.
+ *
  * @since 0.0.1
  */
 final class GenerateMojoTest {

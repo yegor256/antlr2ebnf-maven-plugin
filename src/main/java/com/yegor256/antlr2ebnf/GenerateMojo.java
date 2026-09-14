@@ -42,6 +42,7 @@ import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Generates EBNF.
+ *
  * @since 0.0.1
  * @checkstyle MemberNameCheck (500 lines)
  */
@@ -74,6 +75,7 @@ public final class GenerateMojo extends AbstractMojo {
 
     /**
      * Glob mask for ".g4" files to find in the source directory.
+     *
      * @since 0.0.2
      */
     @Parameter(
@@ -84,6 +86,7 @@ public final class GenerateMojo extends AbstractMojo {
 
     /**
      * Glob mask for ".g4" files to exclude in the source directory.
+     *
      * @since 0.0.2
      */
     @Parameter(
@@ -115,6 +118,7 @@ public final class GenerateMojo extends AbstractMojo {
 
     /**
      * Fit the entire content into one PDF page.
+     *
      * @since 0.0.5
      */
     @Parameter(
@@ -139,10 +143,11 @@ public final class GenerateMojo extends AbstractMojo {
         required = true,
         defaultValue = "eol"
     )
-    public String specials = "";
+    public String specials;
 
     /**
      * Do we need to skip the entire plugin execution?
+     *
      * @since 0.0.2
      */
     @Parameter(
@@ -199,7 +204,15 @@ public final class GenerateMojo extends AbstractMojo {
         required = true,
         defaultValue = "100"
     )
-    public int margin = 100;
+    public int margin;
+
+    /**
+     * Ctor.
+     */
+    public GenerateMojo() {
+        this.specials = "";
+        this.margin = 100;
+    }
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

@@ -5,6 +5,7 @@
 
 /**
  * Tests.
+ *
  * @since 0.0.1
  */
 package com.yegor256.antlr2ebnf;
