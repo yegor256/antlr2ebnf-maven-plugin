@@ -3,6 +3,8 @@
 ---
 analyzer:
   skip_excluded: true
+  disabled_package_managers:
+    - GitHubAction
 excludes:
   scopes:
     - pattern: "test"
